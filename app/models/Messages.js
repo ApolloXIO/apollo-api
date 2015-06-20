@@ -7,7 +7,7 @@ var MessageSchema = new Schema({
 	houseID : { type : Schema.Types.ObjectId, ref: 'Groups', required : true },
 	fromUserID : { type : Schema.Types.ObjectId, ref : 'Users', required : true },
 	tags : [{ type : String }],
-	locations : [{
+	locs : [{
 		name : { type : String },
 		address : { type : String },
 		lat : { type : Number, required : true },
