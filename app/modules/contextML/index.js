@@ -1,21 +1,22 @@
-var natural = require('natural');
-var classifier = new natural.BayesClassifier();
-
+var natural = require('natural'),
+	classifier = new natural.BayesClassifier();
 module.exports = {
 	
 	getTags : function(message, callback) {
-		natural.BayesClassifier.load('classifierModels/classifier.json', null, function(err, classifier) {
+		natural.BayesClassifier.load('app/modules/contextML/classifier.json', null, function(err, classifier) {
+			if(err) {
+				callback(err, "Error");
+			}
 			var tag = classifier.classify(message);
-			callback(tag);
+			callback(undefined, tag);
 		});
 	},
 
 	trainClassifier : function(message, tag, errCallback) {
 		classifier.addDocument(message, tag);
 		classifier.train();
-		classifier.save('classifierModels/classifier.json', function(err, classifier) {
+		classifier.save('app/modules/contextML/classifier.json', function(err, classifier) {
 			errCallback(err);
 		});
 	}
-
 }

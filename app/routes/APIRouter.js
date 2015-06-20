@@ -5,6 +5,8 @@ var Users = require('../models/Users');
 var Groups = require('../models/Groups');
 var Messages = require('../models/Messages');
 
+var contextML = require('../modules/contextML');
+
 router.get('/', function (req, res) {
 	res.send('You Made It!');
 });
@@ -182,6 +184,34 @@ router.route('/message/:msg_id/complete')
 				res.json({ status : 200, response : msg, msg : "Task Completed" });
 			})
 		});
+	});
+
+// ================
+// ContextML Routes
+// ================
+// ?msg=milk
+router.route('/contextml/tags')
+	.get(function(req, res) {
+		var message = req.param('msg');
+		if(!message) {
+			res.send({ status : 204, err : "No Content" });
+		}
+		contextML.getTags(message, function(err, tag) {
+			if(err) {
+				res.send({ status : 500, err : err });
+			}
+			res.json({ status : 200, response : tag });
+		});
+	})
+	.put(function(req, res) {
+		var message = req.body.msg;
+		var tag = req.body.tag;
+		contextML.trainClassifier(message, tag, function (err) {
+			if(err) {
+				res.send({ status : 500, err :err});
+			}
+			res.json({ status : 200, response : "Trained with new data" });
+		})
 	});
 
 module.exports = router;
