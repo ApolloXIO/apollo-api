@@ -29,6 +29,7 @@
     "express-session": "^1.11.3",
     "mongoose": "~3.6.13",
     "morgan": "^1.6.0",
+    "natural": "^0.2.1",
     "passport": "^0.2.2",
     "path": "^0.11.14"
   }
