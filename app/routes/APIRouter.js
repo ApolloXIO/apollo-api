@@ -25,7 +25,7 @@ router.route('/users')
 
 router.route('/user/:user_id')
 	.get(function(req, res) {
-		Users.findOne({ '_id' : req.params.user_id }, 'fname lname email', function(err, user) {
+		Users.findById(req.params.user_id, 'fname lname email', function(err, user) {
 			if(err) { 
 				res.send({ status : 500, err : err });
 			}
@@ -33,25 +33,86 @@ router.route('/user/:user_id')
 		});
 	});
 
+
+// ===========
+// ME ENDPOINT
+// ===========
+
+router.route('/me')
+	.get(function(req, res) {
+		Users.findById(req.body.user_id)
+			.exec(function(err, me){
+				if(err) {
+					res.send({ status : 500, err : err });
+				}
+				res.json({ status : 200, response : me });
+			});
+	});
+
 // ============
 // Group Routes
 // ============
 
 router.route('/groups/create')
+	.post(function(req, res) {
+		var group = new Group();
+			group.name = req.body.name;
+			group.users = [];
+			group.users.push(req.body.user_id);
+			group.loc = req.body.loc;
+
+		group.save(function(err) {
+			if(err) {
+				res.send({ status : 500, err : err });
+			}
+			res.json({ status : 200, response : group, msg : "New Group Created" });
+		})
+	});
+
+router.route('/group/:group_id')
+	.get(function(req, res) {
+		Groups.findById(req.params.group_id)
+			.populate('users', '_id fname lname email')
+			.exec(function(err, group) {
+				if(err) {
+					res.send({ status : 500, err : err });
+				}
+				res.json({ status : 200, response : group });
+			});
+	});
+
+router.route('/group/:group_id/add')
+	.put(function(req, res) {
+		Groups.findById(req.params.group_id)
+			.populate('users', '_id fname lname email')
+			.exec(function(err, group) {
+				if(err) {
+					res.send({ status : 500, err : err });
+				}
+				group.users.push(req.body.user_id);
+				group.save(function(err) {
+					if(err) {
+						res.send({ status : 500, err : err });
+					}
+					res.json({ status : 200, response : group, msg : "New User Added" });
+				})
+			});
+	});
+
 
 // ===============
 // Messages Routes
 // ===============
 
-router.route('/messages/:group_id/:user_id/create')
+router.route('/messages/:group_id/create')
 	.post(function(req, res) {
 		var newMsg = new Messages();
 			newMsg.msg = req.body.name;
 			newMsg.priority = req.body.priority || 2;
 			newMsg.groupID = req.params.group_id;
-			newMsg.fromUserID = req.prarms.user_id;
-			newMsg.tags = req.params.tags;
-			newMsg.locs = req.params.locs;
+			newMsg.fromUserID = req.body.user_id;
+			newMsg.tags = req.body.tags;
+			newMsg.locs = req.body.locs;
 			newMsg.dateCreated = Date.now();
 			newMsg.state = false;
 
@@ -91,7 +152,7 @@ router.route('/messages/archive/:group_id')
 
 router.route('/message/:msg_id')
 	.get(function(req, res) {
-		Messages.findOne({ '_id' : req.params.msg_id })
+		Messages.findById(req.params.msg_id)
 			.populate('groupID')
 			.populate('fromUserID', 'fname lname _id email')
 			.exec(function(err, msg){
@@ -104,7 +165,7 @@ router.route('/message/:msg_id')
 
 router.route('/message/:msg_id/complete')
 	.put(function(req, res) {
-		Messages.findOne({ '_id' : req.params.msg_id }, function(err, msg){
+		Messages.findById(req.params.msg_id, function(err, msg){
 			if(err) {
 				res.send({ status : 500, err : err});
 			}
