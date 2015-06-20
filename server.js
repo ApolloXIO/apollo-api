@@ -10,9 +10,15 @@ var morgan       = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser   = require('body-parser');
 var session      = require('express-session');
+var path 		 = require('path');
 
 var mongoose = require('mongoose');
 var passport = require('passport');
+
+mongoose.connect('mongodb://127.0.0.1/apollox');
+
+var APIRouter = require('./app/routes/APIRouter');
+
 
 // set up our express application
 app.use(morgan('dev')); // log every request to the console
@@ -25,9 +31,18 @@ app.use(session({ secret: 'ilovescotchscotchyscotchscotch' })); // session secre
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 
+// view engine setup
+app.set('view engine', 'jade');
+
 // ======
 // ROUTES
 // ======
+
+app.use('/api/v1/', APIRouter);
+
+app.get('/', function (req, res) {
+	res.send("Hello World!");
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -35,16 +50,6 @@ app.use(function(req, res, next) {
     err.status = 404;
     next(err);
 });
-
-
-
-
-
-app.get('/', function (req, res) {
-	res.send("Hello World!");
-});
-
-
 
 // ===================
 // Run The Express App
