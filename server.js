@@ -15,7 +15,7 @@ var path 		 = require('path');
 var mongoose = require('mongoose');
 var passport = require('passport');
 
-mongoose.connect('mongodb://127.0.0.1/apollox');
+mongoose.connect('mongodb://127.0.0.1/apollo');
 
 var APIRouter = require('./app/routes/APIRouter');
 
