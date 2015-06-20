@@ -17,7 +17,7 @@ var MessageSchema = new Schema({
 		lng : { type : Number, required : true }
 	}],
 	dateCreated : { type : Date, required : true },
-	dateFinished : { type : Date, required : true },
+	dateFinished : { type : Date },
 	state : { type : Boolean, default : false }
 });
 

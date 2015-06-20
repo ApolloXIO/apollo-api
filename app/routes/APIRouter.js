@@ -106,12 +106,14 @@ router.route('/group/:group_id/add')
 
 router.route('/messages/:group_id/create')
 	.post(function(req, res) {
+		var tags = req.body.tags;
+
 		var newMsg = new Messages();
-			newMsg.msg = req.body.name;
+			newMsg.msg = req.body.msg;
 			newMsg.priority = req.body.priority || 2;
 			newMsg.groupID = req.params.group_id;
 			newMsg.fromUserID = req.body.user_id;
-			newMsg.tags = req.body.tags;
+			newMsg.tags = tags.split(",");
 			newMsg.locs = req.body.locs;
 			newMsg.dateCreated = Date.now();
 			newMsg.state = false;
@@ -119,8 +121,9 @@ router.route('/messages/:group_id/create')
 		newMsg.save(function(err) {
 			if(err) {
 				res.send({ status : 500, err : err });
+			} else {
+				res.json({ status : 200, response : newMsg });
 			}
-			res.json({ status : 200, response : newMsg});
 		})
 	});
 
