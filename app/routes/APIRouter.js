@@ -28,7 +28,6 @@ router.use(function (req, res, next) {
 				if(error) {
 					res.send({ status : 500, err : err}); return;
 				}
-				console.log(count);
 				if(count == 1) {
 					next();
 					return;
@@ -147,7 +146,7 @@ router.route('/group/:group_id/add')
 
 router.route('/messages/:group_id/create')
 	.post(function(req, res) {
-		Users.find({'facebook.id' : req.query.fbid}, function(err, user){ 
+		Users.findOne({'facebook.id' : req.query.fbid}, function(err, user){ 
 			if(err) {
 				res.send({ status : 500, err : err});
 			}
