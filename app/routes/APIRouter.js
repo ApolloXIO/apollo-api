@@ -28,7 +28,6 @@ router.use(function (req, res, next) {
 				if(error) {
 					res.send({ status : 500, err : err}); return;
 				}
-				console.log(count);
 				if(count == 1) {
 					next();
 					return;
@@ -147,24 +146,27 @@ router.route('/group/:group_id/add')
 
 router.route('/messages/:group_id/create')
 	.post(function(req, res) {
-		Users.find({'facebook.id' : req.body.user_fbid}, function(err, user){ 
+		Users.findOne({'facebook.id' : req.query.fbid}, function(err, user){ 
 			if(err) {
 				res.send({ status : 500, err : err});
 			}
+			console.log(user);
+			console.log(req.query);
 			var newMsg = new Messages();
-				newMsg.msg = req.body.msg;
-				newMsg.priority = req.body.priority || 2;
+				newMsg.msg = req.query.msg;
+				newMsg.priority = req.query.priority || 2;
 				newMsg.groupID = req.params.group_id;
 				newMsg.fromUserID = user._id;
-				newMsg.tags = req.body.tags;
-				newMsg.locs = req.body.locs;
+				newMsg.tags = req.query.tags;
+				newMsg.locs = req.query.locs;
 				newMsg.dateCreated = Date.now();
 				newMsg.state = false;
-
+			console.log(newMsg);
 			newMsg.save(function(err) {
 				if(err) {
 					res.send({ status : 500, err : err });
 				} else {
+					console.log(newMsg);
 					res.json({ status : 200, response : newMsg });
 				}
 			})
