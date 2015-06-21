@@ -147,7 +147,7 @@ router.route('/group/:group_id/add')
 
 router.route('/messages/:group_id/create')
 	.post(function(req, res) {
-		Users.find({'facebook.id' : req.query.user_fbid}, function(err, user){ 
+		Users.find({'facebook.id' : req.query.fbid}, function(err, user){ 
 			if(err) {
 				res.send({ status : 500, err : err});
 			}
