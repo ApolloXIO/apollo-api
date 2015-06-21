@@ -25,7 +25,7 @@ app.use(morgan('dev')); // log every request to the console
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser.json()); // get information from html forms
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({ secret: 'ilovescotchscotchyscotchscotch' })); // session secret
 app.use(passport.initialize());
@@ -41,7 +41,7 @@ app.set('view engine', 'jade');
 app.use('/api/v1/', APIRouter);
 
 app.get('/', function (req, res) {
-	res.send("Hello World!");
+	res.sendfile('./public/' + 'index.html');
 });
 
 // catch 404 and forward to error handler
