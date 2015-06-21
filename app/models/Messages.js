@@ -9,7 +9,7 @@ var MessageSchema = new Schema({
 	priority : { type : Number, required : true, default : 2 },
 	groupID : { type : Schema.Types.ObjectId, ref: 'Groups', required : true },
 	fromUserID : { type : Schema.Types.ObjectId, ref : 'Users', required : true },
-	tags : [{ type : String }],
+	tags : { type : String },
 	locs : [{
 		name : { type : String },
 		address : { type : String },
