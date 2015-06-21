@@ -152,6 +152,7 @@ router.route('/messages/:group_id/create')
 				res.send({ status : 500, err : err});
 			}
 			console.log(user);
+			console.log(req.body);
 			var newMsg = new Messages();
 				newMsg.msg = req.body.msg;
 				newMsg.priority = req.body.priority || 2;
