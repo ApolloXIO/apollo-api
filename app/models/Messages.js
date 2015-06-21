@@ -13,8 +13,8 @@ var MessageSchema = new Schema({
 	locs : [{
 		name : { type : String },
 		address : { type : String },
-		lat : { type : Number, required : true },
-		lng : { type : Number, required : true }
+		lat : { type : Number },
+		lng : { type : Number }
 	}],
 	dateCreated : { type : Date, required : true },
 	dateFinished : { type : Date },

@@ -147,23 +147,28 @@ router.route('/group/:group_id/add')
 
 router.route('/messages/:group_id/create')
 	.post(function(req, res) {
-		var newMsg = new Messages();
-			newMsg.msg = req.body.msg;
-			newMsg.priority = req.body.priority || 2;
-			newMsg.groupID = req.params.group_id;
-			newMsg.fromUserID = req.body.user_id;
-			newMsg.tags = req.body.tags;
-			newMsg.locs = req.body.locs;
-			newMsg.dateCreated = Date.now();
-			newMsg.state = false;
-
-		newMsg.save(function(err) {
+		Users.find({'facebook.id' : req.body.user_fbid}, function(err, user){ 
 			if(err) {
-				res.send({ status : 500, err : err });
-			} else {
-				res.json({ status : 200, response : newMsg });
+				res.send({ status : 500, err : err});
 			}
-		})
+			var newMsg = new Messages();
+				newMsg.msg = req.body.msg;
+				newMsg.priority = req.body.priority || 2;
+				newMsg.groupID = req.params.group_id;
+				newMsg.fromUserID = user._id;
+				newMsg.tags = req.body.tags;
+				newMsg.locs = req.body.locs;
+				newMsg.dateCreated = Date.now();
+				newMsg.state = false;
+
+			newMsg.save(function(err) {
+				if(err) {
+					res.send({ status : 500, err : err });
+				} else {
+					res.json({ status : 200, response : newMsg });
+				}
+			})
+		});
 	});
 
 router.route('/messages/:group_id')
